@@ -1,0 +1,171 @@
+* {
+  font-family: 'Roboto', sans-serif;
+  font-size: 12px;
+}
+
+#title {
+  font-size: 14px;
+}
+
+.tabsList {
+  max-height: 174px;
+  overflow: auto;
+  list-style: none;
+  padding-left: 0;
+  border-radius: 2px;
+  border: 1px solid #ddd; 
+}
+
+.tabsList li {
+  padding: 10px 15px;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+}
+
+.tabsList li:first-child {
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+}
+
+.tabsList li:last-child {
+  border-bottom-left-radius: 2px;
+  border-bottom-right-radius: 2px;
+  border-bottom: transparent;
+}
+
+.tabsList li:hover {
+  background-color: #f1f1f1;
+}
+
+.tabsList li a {
+  text-decoration: none;
+    color: #1f4788;
+    width: 400px;
+    max-width: 400px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tabsList li span {
+  margin-left: 15px;
+  cursor: pointer;
+}
+
+.flex {
+  display: flex;
+  flex: 1;
+}
+
+.txtControl {
+  border: 1px solid #ddd;
+}
+
+.btn, .txtControl {
+  outline: none;  
+  border-radius: 2px;
+  padding: 6px 8px;
+}
+
+.btn-primary,
+.btn-danger {
+  color: #fff;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.btn-primary:hover {
+  background-color: #0069d9;
+  border-color: #0062cc;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+  border-color: #bd2130;
+}
+
+.tabs {
+  display: flex;
+  flex:1;
+}
+
+.tab {
+  padding: 10px 15px;
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  text-transform: capitalize;
+  cursor: pointer;
+}
+
+.tab:not(.active) {
+  border-bottom: 1px solid #ddd;
+}
+
+.tab.active {
+  border: 1px solid #ddd;
+  border-bottom-color: transparent;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+}
+
+.tab-pane {
+  display: none;
+  width: 460px;
+}
+
+.tab-pane.active {
+  display: block;
+}
+
+#lstGroups .groupcontainer:first-child {
+  margin-top: 1em;
+}
+
+.groupcontainer {
+  margin: 5px 0;
+  border-radius: 2px;
+  border: 1px solid #ddd;
+}
+
+.groupcontainer .groupheader {
+  padding: 0 10px;
+  text-transform: capitalize;
+}
+
+.groupcontainer .groupheader .fa {
+  margin: 0 10px;
+  cursor: pointer;
+}
+
+.groupcontainer .groupheader .fa:first-child {
+  margin-left: 15px;
+}
+
+.groupcontainer .tabsList {
+  display: none;
+  margin: 0;
+  border-left: none;
+  border-right: none;
+  border-bottom: none;
+}
+
+.groupcontainer.in .tabsList {
+  display: block;
+}
+
+.norecords {
+  margin: 10px 0;
+  text-align: center;
+}

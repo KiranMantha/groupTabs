@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Group Tabs</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href='./styles.css'>
+    <link rel="stylesheet" type="text/css" href='./fontawesome.css'>    
+    <script defer type="text/javascript" src='./collapse_tab.js'></script>
+  </head>
+
+  <body>
+    <div class="tabs">
+      <div class="tab active" data-tabname='add'>add group</div>
+      <div class="tab" data-tabname='tablist'>groups</div>
+    </div>
+    <div class="tab-panes">
+      <div class="tab-pane active">
+          <h3>Tabs in current window:</h3>
+          <ol id='olTabsList' class="tabsList"></ol>
+          <div>
+            <input type="text" id="txtGroupName" class='txtControl' placeholder="Group Name">
+            <button class="btn btn-primary" id="btnSaveGroup">Save Group</button>
+          </div> 
+      </div>
+      <div class="tab-pane">
+        <div id='lstGroups'></div>
+      </div>
+    </div>
+  </body>
+
+</html>

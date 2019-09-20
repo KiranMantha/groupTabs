@@ -1,0 +1,17 @@
+{
+  "manifest_version": 2,
+  "name": "Group Tabs",
+  "description": "Save tabs as a collection and view later.",
+  "version": "1.0",
+  "author": "Kiran Mantha",
+  "permissions": ["tabs", "storage"],
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+  "browser_action": {
+    "default_title": "Group Tabs",
+    "default_popup": "collapse_tab.html"
+  }
+}

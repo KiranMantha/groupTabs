@@ -132,7 +132,7 @@
 
     savebtn.addEventListener("click", function () {
       hasClass(txtgroupname, 'error') && removeClass(txtgroupname, 'error');
-      if (txtgroupname.value) {
+      if (txtgroupname.value && loadedTabs.length > 0) {
         var tabs = [];
         loadedTabs.forEach(function (tab) {
           tabs.push({

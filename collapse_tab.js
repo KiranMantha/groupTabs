@@ -1,30 +1,30 @@
 (function () {
   var storedData = [];
+  var loadedTabs = [];
 
   function loadTabs() {
     chrome.tabs.query({
         currentWindow: true
       },
       function (btabs) {
+        loadedTabs = loadedTabs.concat(btabs);        
+        var ol = byId("olTabsList");
+        ol.innerHTML = "";
         var k = document.createDocumentFragment();
         for (var tab of btabs) {
-          var li = document.createElement("li"),
-            a = document.createElement("a"),
-            span = document.createElement("span");
+          var li = createEl("li"),
+            a = createEl("a"),
+            span = createEl("span");
 
           a.textContent = tab.title;
           a.setAttribute("href", tab.url);
-          span.classList.add("close", "fa", "fa-times");
+          addClass(span, ["close", "fa", "fa-times"]);
           span.setAttribute("title", "Remove");
           span.setAttribute("data-tabid", tab.id);
           li.setAttribute("title", tab.title);
-
-          li.appendChild(a);
-          li.appendChild(span);
-          k.appendChild(li);
+          appendChild(li, a, span);
+          appendChild(k, li);
         }
-        var ol = document.getElementById("olTabsList");
-        ol.innerHTML = "";
         ol.appendChild(k);
       }
     );
@@ -32,9 +32,8 @@
 
   function onToggleIconClick(e) {
     var pgc = e.target.parentElement.parentElement;
-    pgc.classList.toggle('in');
-    e.target.classList.toggle('fa-chevron-down');
-    e.target.classList.toggle('fa-chevron-up');
+    toggleClass(pgc, 'in');
+    toggleClass(e.target, ['fa-chevron-down', 'fa-chevron-up']);
   }
 
   function openGroupedTabs(e) {
@@ -43,7 +42,9 @@
     for (var tab of tabs) {
       urls.push(tab.url);
     }
-    chrome.windows.create({ url: urls });
+    chrome.windows.create({
+      url: urls
+    });
   }
 
   function deleteSavedGroup(e) {
@@ -56,7 +57,7 @@
 
   function loadSavedGroups() {
     chrome.storage.local.get(["groupedtabs"], function (data) {
-      var lstGroups = document.getElementById("lstGroups"),
+      var lstGroups = byId("lstGroups"),
         docfrag = document.createDocumentFragment();
       lstGroups.innerHTML = "";
 
@@ -64,97 +65,94 @@
         hasDataInStorage = true;
         storedData = data.groupedtabs;
         storedData.forEach(function (group, i) {
-          var groupcontainer = document.createElement("div"),
-            h3 = document.createElement("h3"),
-            ollistcontainer = document.createElement("ol"),
-            openicon = document.createElement("i"),
-            toggleicon = document.createElement("i"),
-            deleteicon = document.createElement("i");
+          var groupcontainer = createEl("div"),
+            h3 = createEl("h3"),
+            ollistcontainer = createEl("ol"),
+            openicon = createEl("i"),
+            toggleicon = createEl("i"),
+            deleteicon = createEl("i");
 
-          groupcontainer.classList.add("groupcontainer");
-          ollistcontainer.classList.add("tabsList");
-          openicon.classList.add('fa', 'fa-sign-out');
+          addClass(groupcontainer, "groupcontainer");
+          addClass(ollistcontainer, "tabsList");
+          addClass(openicon, ['fa', 'fa-sign-out']);
           openicon.setAttribute('title', 'Open Group');
           openicon.groupedtabs = group.tablist;
           openicon.onclick = openGroupedTabs;
-          toggleicon.classList.add('fa', 'fa-chevron-down');
+          addClass(toggleicon, ['fa', 'fa-chevron-down']);
           toggleicon.setAttribute('title', 'View');
           toggleicon.onclick = onToggleIconClick;
-          deleteicon.classList.add('fa', 'fa-trash');
+          addClass(deleteicon, ['fa', 'fa-trash']);
           deleteicon.setAttribute('title', 'Delete Group');
           deleteicon.groupindex = i;
           deleteicon.onclick = deleteSavedGroup;
 
-          h3.classList.add("groupheader");
+          addClass(h3, "groupheader");
           h3.textContent = group.name;
-
-          h3.appendChild(openicon);
-          h3.appendChild(deleteicon);
-          h3.appendChild(toggleicon);
+          appendChild(h3, openicon, deleteicon, toggleicon);
 
           for (var tab of group.tablist) {
-            var li = document.createElement("li"),
-              a = document.createElement("a");
+            var li = createEl("li"),
+              a = createEl("a");
 
             a.textContent = tab.title;
             a.setAttribute("href", tab.url);
             li.setAttribute("title", tab.title);
-            li.appendChild(a);
-            ollistcontainer.appendChild(li);
+            appendChild(li, a);
+            appendChild(ollistcontainer, li);
           }
-          groupcontainer.appendChild(h3);
-          groupcontainer.appendChild(ollistcontainer);
-          docfrag.appendChild(groupcontainer);
+          appendChild(groupcontainer, h3, ollistcontainer);
+          appendChild(docfrag, groupcontainer);
         });
       } else {
-        var errorDiv = document.createElement("div");
+        var errorDiv = createEl("div");
         errorDiv.textContent = "No Saved Groups Found.";
-        errorDiv.classList.add('norecords');
-        docfrag.appendChild(errorDiv);
+        addClass(errorDiv, 'norecords');
+        appendChild(docfrag, errorDiv);
       }
-      lstGroups.appendChild(docfrag);
+      appendChild(lstGroups, docfrag);
     });
   }
 
   function bindClick() {
-    var ol = document.getElementById("olTabsList"),
-      savebtn = document.getElementById("btnSaveGroup"),
-      txtgroupname = document.getElementById("txtGroupName");
+    var ol = byId("olTabsList"),
+      savebtn = byId("btnSaveGroup"),
+      txtgroupname = byId("txtGroupName");
 
     ol.addEventListener("click", function (e) {
-      if (e.target.classList.contains("close")) {
-        removeTab(e.target.getAttribute("data-tabid"));
+      if (hasClass(e.target, "close")) {
+        //removeTab(e.target.getAttribute("data-tabid"));
+        var tabid = parseInt(e.target.getAttribute("data-tabid"));
+        remove(ol, e.target.parentNode);
+        var delTabIndex = loadedTabs.map(function (tab) {
+          return tab.id
+        }).indexOf(tabid);
+        loadedTabs.splice(delTabIndex, 1);
       }
     });
 
     savebtn.addEventListener("click", function () {
+      hasClass(txtgroupname, 'error') && removeClass(txtgroupname, 'error');
       if (txtgroupname.value) {
-        chrome.tabs.query({
-            currentWindow: true
-          },
-          function (btabs) {
-            var tabs = [];
-            for (var tab of btabs) {
-              tabs.push({
-                title: tab.title,
-                url: tab.url
-              });
-            }
-            storedData.push({
-              name: txtgroupname.value,
-              tablist: tabs
-            });
-
-            chrome.storage.local.set({
-              groupedtabs: storedData
-            }, function (
-              data
-            ) {
-              console.log(data);
-            });
-            txtgroupname.value = "";
-          }
-        );
+        var tabs = [];
+        loadedTabs.forEach(function (tab) {
+          tabs.push({
+            title: tab.title,
+            url: tab.url
+          });
+        });
+        storedData.push({
+          name: txtgroupname.value,
+          tablist: tabs
+        });
+        chrome.storage.local.set({
+          groupedtabs: storedData
+        });
+        loadedTabs = [];
+        txtgroupname.value = "";
+        var groupDiv = document.querySelector("[data-tabname='tablist']");
+        groupDiv.click();
+      } else {
+        addClass(txtgroupname, 'error');
       }
     });
   }
@@ -164,22 +162,24 @@
   }
 
   function toggleTabs() {
-    var sourceCDOM = document.querySelectorAll('.tabs');
+    var sourceCDOM = byClass('.tabs');
 
     for (var sourceC of sourceCDOM) {
       sourceC.addEventListener("click", function (e) {
-        if (!e.target.classList.contains("active")) {
+        if (!hasClass(e.target, "active")) {
           sourceC.querySelectorAll(".active").forEach(function (node) {
-            node.classList.remove("active");
+            removeClass(node, "active");
             var i = Array.prototype.indexOf.call(sourceC.children, node);
-            sourceC.nextElementSibling.children[i].classList.remove("active");
+            removeClass(sourceC.nextElementSibling.children[i], "active");
           });
-          e.target.classList.add("active");
+          addClass(e.target, "active");
           var index = Array.prototype.indexOf.call(
             sourceC.children,
             e.target
           );
-          sourceC.nextElementSibling.children[index].classList.add("active");
+          addClass(sourceC.nextElementSibling.children[index], "active");
+          var tabName = e.target.getAttribute('data-tabname');
+          tabName === 'add' && loadTabs();
         }
       });
     }
@@ -191,13 +191,6 @@
       toggleTabs();
       loadTabs();
       loadSavedGroups();
-      chrome.tabs.onRemoved.addListener(function (tabid) {
-        document
-          .querySelector('#olTabsList span[data-tabid="' + tabid + '"]')
-          .parentElement
-          .remove();
-      });
-
       chrome.storage.onChanged.addListener(function (changes) {
         loadSavedGroups();
       });

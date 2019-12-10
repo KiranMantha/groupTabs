@@ -18,6 +18,7 @@
 
           a.textContent = tab.title;
           a.setAttribute("href", tab.url);
+          a.setAttribute("target", "_blank");
           addClass(span, ["close", "fa", "fa-times"]);
           span.setAttribute("title", "Remove");
           span.setAttribute("data-tabid", tab.id);
@@ -96,6 +97,7 @@
 
             a.textContent = tab.title;
             a.setAttribute("href", tab.url);
+            a.setAttribute("target", "_blank");
             li.setAttribute("title", tab.title);
             appendChild(li, a);
             appendChild(ollistcontainer, li);

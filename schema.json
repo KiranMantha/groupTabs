@@ -1,0 +1,59 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "$ref": "#/definitions/GroupsList",
+  "definitions": {
+    "GroupsList": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "groupedtabs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Datum"
+          }
+        }
+      },
+      "required": [
+        "groupedtabs"
+      ],
+      "title": "GroupsList"
+    },
+    "Datum": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "tablist": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SubDatum"
+          }
+        }
+      },
+      "required": [
+        "name",
+        "tablist"
+      ],
+      "title": "Datum"
+    },
+    "SubDatum": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "url"
+      ],
+      "title": "SubDatum"
+    }
+  }
+}

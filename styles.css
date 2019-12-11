@@ -60,7 +60,11 @@
 
 * {
   font-family: 'Roboto', sans-serif;
-  font-size: 12px;
+  font-size: 13px;
+}
+
+.mt-0 {
+  margin-top: 0;
 }
 
 #title {
@@ -172,6 +176,7 @@
   justify-content: center;
   text-transform: capitalize;
   cursor: pointer;
+  font-weight: 500;
 }
 
 .tab:not(.active) {
@@ -188,6 +193,7 @@
 .tab-pane {
   display: none;
   width: 460px;
+  margin-top: 1em;
 }
 
 .tab-pane.active {
@@ -195,7 +201,7 @@
 }
 
 #lstGroups .groupcontainer:first-child {
-  margin-top: 1em;
+  margin-top: 0;
 }
 
 .groupcontainer {
@@ -233,4 +239,27 @@
 .norecords {
   margin: 10px 0;
   text-align: center;
+}
+
+#drag-drop {
+  position: relative;
+  margin-top: 10px;
+  height: 150px;
+  border: 2px dashed #bbb;
+  background-color: #eee;
+}
+
+#drag-drop:before {
+  content: 'Drop Here';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 18px;
+  color: #aaa;
 }

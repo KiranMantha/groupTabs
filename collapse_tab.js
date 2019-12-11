@@ -1,13 +1,15 @@
 (function () {
   var storedData = [];
   var loadedTabs = [];
+  var schema = {};
 
   function loadTabs() {
+    loadedTabs = [];
     chrome.tabs.query({
         currentWindow: true
       },
       function (btabs) {
-        loadedTabs = loadedTabs.concat(btabs);        
+        loadedTabs = loadedTabs.concat(btabs);
         var ol = byId("olTabsList");
         ol.innerHTML = "";
         var k = document.createDocumentFragment();
@@ -159,10 +161,6 @@
     });
   }
 
-  function removeTab(index) {
-    chrome.tabs.remove(parseInt(index));
-  }
-
   function toggleTabs() {
     var sourceCDOM = byClass('.tabs');
 
@@ -187,12 +185,49 @@
     }
   }
 
+  function download(content, contentType) {
+    var a = document.createElement("a");
+    content = JSON.stringify(content, null, '\t');
+    var file = new Blob([content], {
+      type: contentType
+    });
+    a.setAttribute('href', URL.createObjectURL(file));
+    a.setAttribute('target', '_blank');
+    a.setAttribute('download', 'groupTabs-'+(new Date()).getTime() + '.json');
+    a.click();
+  }
+
+  function exportImport() {
+    byId('btnImport').addEventListener('click', function () {
+      chrome.storage.local.get(["groupedtabs"], function (data) {
+        download(data, 'application/json');
+      });
+    });
+    
+  }
+
+  function validateJSON() {
+    var errorDiv = byId('diverror');
+    var ajv = new Ajv();
+    var valid = ajv.validate(schema, {});
+    if (!valid) {
+      errorDiv.innerHTML = "Please upload valid json file."
+    }
+  }
+
   function init() {
     document.addEventListener('DOMContentLoaded', function () {
+      var url = chrome.runtime.getURL('schema.json');
+      fetch(url).then(function (res) {
+        return res.json();
+      }).then(function (_schema) {
+        schema = _schema
+      });
       bindClick();
       toggleTabs();
       loadTabs();
       loadSavedGroups();
+      exportImport();
       chrome.storage.onChanged.addListener(function (changes) {
         loadSavedGroups();
       });

@@ -7,19 +7,21 @@
     <title>Group Tabs</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href='./styles.css'>
-    <link rel="stylesheet" type="text/css" href='./fontawesome.css'>    
+    <link rel="stylesheet" type="text/css" href='./fontawesome.css'>
+    <script defer async src="./ajv.min.js"></script>
     <script defer type="text/javascript" src='./utils.js'></script>
     <script defer type="text/javascript" src='./collapse_tab.js'></script>
   </head>
 
   <body>
     <div class="tabs">
-      <div class="tab active" data-tabname='add'>add group</div>
-      <div class="tab" data-tabname='tablist'>groups</div>
+      <div title="Add Group"class="tab active" data-tabname='add'>add group</div>
+      <div title="Groups" class="tab" data-tabname='tablist'>groups</div>
+      <div title="Import / Export" class="tab" data-tabname="importexport">import / export</div>
     </div>
     <div class="tab-panes">
       <div class="tab-pane active">
-          <h3>Tabs in current window:</h3>
+          <h3 class="mt-0">Tabs in current window:</h3>
           <ol id='olTabsList' class="tabsList"></ol>
           <div>
             <input type="text" id="txtGroupName" class='txtControl' placeholder="Group Name">
@@ -29,7 +31,14 @@
       <div class="tab-pane">
         <div id='lstGroups'></div>
       </div>
+      <div class="tab-pane">
+        <div>
+          <button class="btn btn-primary" id="btnImport">Download groups as json</button>
+        </div>
+        <div id="drag-drop"></div>
+        <p>Note: Only json files are allowed.</p>
+        <div id="diverror"></div>
+      </div>
     </div>
   </body>
-
 </html>

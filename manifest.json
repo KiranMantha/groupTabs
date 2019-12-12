@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Group Tabs",
   "description": "Save tabs as a collection and view later.",
-  "version": "0.0.0.3",
+  "version": "0.0.0.4",
   "author": "Kiran Mantha",
   "permissions": ["tabs", "storage"],
   "icons": {

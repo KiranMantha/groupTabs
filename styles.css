@@ -67,6 +67,14 @@
   margin-top: 0;
 }
 
+.mb-10 {
+  margin-bottom: 10px;
+}
+
+.text-center {
+  text-align: center;
+}
+
 #title {
   font-size: 14px;
 }
@@ -152,6 +160,15 @@
 .btn-primary:hover {
   background-color: #0069d9;
   border-color: #0062cc;
+}
+
+.btn-primary:disabled {
+  opacity: 0.65;
+}
+
+.btn-primary:disabled:hover {
+  background-color: #007bff;
+  border-color: #007bff;
 }
 
 .btn-danger {
@@ -241,25 +258,44 @@
   text-align: center;
 }
 
-#drag-drop {
-  position: relative;
+.file-upload {
   margin-top: 10px;
-  height: 150px;
-  border: 2px dashed #bbb;
-  background-color: #eee;
+  border: 1px solid #ccc;
+  border-radius: 2px;
 }
 
-#drag-drop:before {
-  content: 'Drop Here';
+.file-upload input[type="file"] {
+  display: none;
+}
+
+.file-upload .lblFileUpload {
+  display: block;
+  padding: 8px 10px;
+  position: relative;
+  cursor: pointer;
+}
+
+.file-upload .lblFileUpload:after {
+  content: 'Browse';
   position: absolute;
   top: 0;
-  left: 0;
   right: 0;
   bottom: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 18px;
-  color: #aaa;
+  padding: 8px 10px;
+  background-color: #e9ecef;
+  border-left: 1px solid #ccc;
+}
+
+#divmsg {
+  display: none;
+}
+
+#divmsg.error {
+  display: block;  
+  color: #bd2130;
+}
+
+#divmsg.success {
+  display: block;
+  color: #28a745;
 }

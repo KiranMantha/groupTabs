@@ -9,8 +9,8 @@
     <link rel="stylesheet" type="text/css" href='./styles.css'>
     <link rel="stylesheet" type="text/css" href='./fontawesome.css'>
     <script defer async src="./ajv.min.js"></script>
-    <script defer type="text/javascript" src='./utils.js'></script>
-    <script defer type="text/javascript" src='./collapse_tab.js'></script>
+    <script type="text/javascript" src='./utils.js'></script>
+    <script type="text/javascript" src='./collapse_tab.js'></script>
   </head>
 
   <body>
@@ -32,12 +32,16 @@
         <div id='lstGroups'></div>
       </div>
       <div class="tab-pane">
-        <div>
-          <button class="btn btn-primary" id="btnImport">Download groups as json</button>
+        <div class="text-center mb-10">
+          <button class="btn btn-primary" title="Download groups as json" id="btnImport">Download groups as json</button>
         </div>
-        <div id="drag-drop"></div>
+        <div class="text-center">(or)</div>
+        <div class="file-upload" title="Upload file">
+          <input type="file" id="inptFile"/>
+          <label id="lblFile" class="lblFileUpload" for="inptFile">Choose File To Upload</label>
+        </div>
         <p>Note: Only json files are allowed.</p>
-        <div id="diverror"></div>
+        <div id="divmsg"></div>
       </div>
     </div>
   </body>

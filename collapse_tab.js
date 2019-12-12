@@ -1,7 +1,8 @@
 (function () {
-  var storedData = [];
-  var loadedTabs = [];
-  var schema = {};
+  var storedData = [],
+    loadedTabs = [],
+    schema = {},
+    ajv = null;
 
   function loadTabs() {
     loadedTabs = [];
@@ -58,7 +59,8 @@
     });
   }
 
-  function loadSavedGroups() {
+  function loadSavedGroups() {    
+    var downloadBtn = byId('btnImport');
     chrome.storage.local.get(["groupedtabs"], function (data) {
       var lstGroups = byId("lstGroups"),
         docfrag = document.createDocumentFragment();
@@ -67,51 +69,60 @@
       if (data.groupedtabs && data.groupedtabs.length > 0) {
         hasDataInStorage = true;
         storedData = data.groupedtabs;
-        storedData.forEach(function (group, i) {
-          var groupcontainer = createEl("div"),
-            h3 = createEl("h3"),
-            ollistcontainer = createEl("ol"),
-            openicon = createEl("i"),
-            toggleicon = createEl("i"),
-            deleteicon = createEl("i");
+        try {
+          storedData.forEach(function (group, i) {
+            var groupcontainer = createEl("div"),
+              h3 = createEl("h3"),
+              ollistcontainer = createEl("ol"),
+              openicon = createEl("i"),
+              toggleicon = createEl("i"),
+              deleteicon = createEl("i");
 
-          addClass(groupcontainer, "groupcontainer");
-          addClass(ollistcontainer, "tabsList");
-          addClass(openicon, ['fa', 'fa-sign-out']);
-          openicon.setAttribute('title', 'Open Group');
-          openicon.groupedtabs = group.tablist;
-          openicon.onclick = openGroupedTabs;
-          addClass(toggleicon, ['fa', 'fa-chevron-down']);
-          toggleicon.setAttribute('title', 'View');
-          toggleicon.onclick = onToggleIconClick;
-          addClass(deleteicon, ['fa', 'fa-trash']);
-          deleteicon.setAttribute('title', 'Delete Group');
-          deleteicon.groupindex = i;
-          deleteicon.onclick = deleteSavedGroup;
+            addClass(groupcontainer, "groupcontainer");
+            addClass(ollistcontainer, "tabsList");
+            addClass(openicon, ['fa', 'fa-sign-out']);
+            openicon.setAttribute('title', 'Open Group');
+            openicon.groupedtabs = group.tablist;
+            openicon.onclick = openGroupedTabs;
+            addClass(toggleicon, ['fa', 'fa-chevron-down']);
+            toggleicon.setAttribute('title', 'View');
+            toggleicon.onclick = onToggleIconClick;
+            addClass(deleteicon, ['fa', 'fa-trash']);
+            deleteicon.setAttribute('title', 'Delete Group');
+            deleteicon.groupindex = i;
+            deleteicon.onclick = deleteSavedGroup;
 
-          addClass(h3, "groupheader");
-          h3.textContent = group.name;
-          appendChild(h3, openicon, deleteicon, toggleicon);
+            addClass(h3, "groupheader");
+            h3.textContent = group.name;
+            appendChild(h3, openicon, deleteicon, toggleicon);
 
-          for (var tab of group.tablist) {
-            var li = createEl("li"),
-              a = createEl("a");
+            for (var tab of group.tablist) {
+              var li = createEl("li"),
+                a = createEl("a");
 
-            a.textContent = tab.title;
-            a.setAttribute("href", tab.url);
-            a.setAttribute("target", "_blank");
-            li.setAttribute("title", tab.title);
-            appendChild(li, a);
-            appendChild(ollistcontainer, li);
-          }
-          appendChild(groupcontainer, h3, ollistcontainer);
-          appendChild(docfrag, groupcontainer);
-        });
+              a.textContent = tab.title;
+              a.setAttribute("href", tab.url);
+              a.setAttribute("target", "_blank");
+              li.setAttribute("title", tab.title);
+              appendChild(li, a);
+              appendChild(ollistcontainer, li);
+            }
+            appendChild(groupcontainer, h3, ollistcontainer);
+            appendChild(docfrag, groupcontainer);
+          });
+          downloadBtn.removeAttribute('disabled');
+        } catch (e) {
+          var errorDiv = createEl("div");
+          errorDiv.textContent = "No Saved Groups Found.";
+          addClass(errorDiv, 'norecords');
+          appendChild(docfrag, errorDiv);
+        }
       } else {
         var errorDiv = createEl("div");
         errorDiv.textContent = "No Saved Groups Found.";
         addClass(errorDiv, 'norecords');
         appendChild(docfrag, errorDiv);
+        downloadBtn.setAttribute('disabled', 'disabled');
       }
       appendChild(lstGroups, docfrag);
     });
@@ -132,7 +143,7 @@
         }).indexOf(tabid);
         loadedTabs.splice(delTabIndex, 1);
       }
-    });
+    }, false);
 
     savebtn.addEventListener("click", function () {
       hasClass(txtgroupname, 'error') && removeClass(txtgroupname, 'error');
@@ -158,7 +169,7 @@
       } else {
         addClass(txtgroupname, 'error');
       }
-    });
+    }, false);
   }
 
   function toggleTabs() {
@@ -180,8 +191,9 @@
           addClass(sourceC.nextElementSibling.children[index], "active");
           var tabName = e.target.getAttribute('data-tabname');
           tabName === 'add' && loadTabs();
+          tabName === 'importexport' && resetExportImport();
         }
-      });
+      }, false);
     }
   }
 
@@ -193,7 +205,7 @@
     });
     a.setAttribute('href', URL.createObjectURL(file));
     a.setAttribute('target', '_blank');
-    a.setAttribute('download', 'groupTabs-'+(new Date()).getTime() + '.json');
+    a.setAttribute('download', 'groupTabs-' + (new Date()).getTime() + '.json');
     a.click();
   }
 
@@ -202,26 +214,69 @@
       chrome.storage.local.get(["groupedtabs"], function (data) {
         download(data, 'application/json');
       });
-    });
-    
+    }, false);
+    byId('inptFile').addEventListener('change', function (e) {
+      resetExportImport();
+      var input = e.target,
+        divmsg = byId('divmsg'),
+        reader = new FileReader(),
+        extension = null,
+        json = {},
+        valid = false;
+
+      if (input.files && input.files[0]) {
+        byId('lblFile').innerHTML = input.files[0].name;
+        extension = input.files[0].name.split('.');
+        extension = extension[extension.length - 1];
+        if (extension === 'json') {
+          reader.readAsText(input.files[0]);
+          reader.onload = function (evt) {
+            json = JSON.parse(evt.target.result);
+            valid = validateJSON(json);
+            if (valid) {
+              chrome.storage.local.set(json);
+              byId('lblFile').innerHTML = 'Choose File To Upload';
+              addClass(divmsg, 'success');
+              divmsg.innerHTML = 'Groups uploaded successfully.';
+            } else {
+              errorInFileUpload();
+            }
+          }
+          input.files = null;
+          input.value = '';
+        } else {
+          errorInFileUpload();
+        }
+      }
+    }, false);
   }
 
-  function validateJSON() {
-    var errorDiv = byId('diverror');
-    var ajv = new Ajv();
-    var valid = ajv.validate(schema, {});
-    if (!valid) {
-      errorDiv.innerHTML = "Please upload valid json file."
-    }
+  function errorInFileUpload() {
+    var divmsg = byId('divmsg');
+    byId('lblFile').innerHTML = 'Choose File To Upload';
+    addClass(divmsg, 'error');
+    divmsg.innerHTML = 'Please upload valid JSON file.';
+  }
+
+  function resetExportImport() {
+    var divmsg = byId('divmsg');
+    byId('lblFile').innerHTML = 'Choose File To Upload';
+    removeClass(divmsg, ['error', 'success']);
+    divmsg.innerHTML = '';
+  }
+
+  function validateJSON(json) {
+    ajv = new Ajv();
+    return ajv.validate(schema, json);
   }
 
   function init() {
     document.addEventListener('DOMContentLoaded', function () {
-      var url = chrome.runtime.getURL('schema.json');
-      fetch(url).then(function (res) {
+      var schemaurl = chrome.runtime.getURL('schema.json');
+      fetch(schemaurl).then(function (res) {
         return res.json();
       }).then(function (_schema) {
-        schema = _schema
+        schema = _schema;
       });
       bindClick();
       toggleTabs();

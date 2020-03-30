@@ -128,6 +128,21 @@
     });
   }
 
+  function editGroup(groupid) {
+    
+  }
+
+  function getPageMeta(pageurl) {
+    chrome.runtime.sendMessage(
+      {
+        contentScriptQuery: 'fetchUrl',
+        url: 'http://url-metadata.herokuapp.com/api/metadata?url=' + pageurl
+      },
+      function(response){
+
+      });
+  }
+
   function bindClick() {
     var ol = byId("olTabsList"),
       savebtn = byId("btnSaveGroup"),
@@ -162,6 +177,7 @@
         chrome.storage.local.set({
           groupedtabs: storedData
         });
+        chrome.storage.sync.set({groupedtabs: storedData});
         loadedTabs = [];
         txtgroupname.value = "";
         var groupDiv = document.querySelector("[data-tabname='tablist']");
@@ -270,6 +286,15 @@
     return ajv.validate(schema, json);
   }
 
+  function getSyncData() {
+    chrome.storage.sync.get(['groupedtabs'], function(data) {
+      chrome.storage.local.set({
+        groupedtabs: data.groupedtabs
+      });
+      loadSavedGroups();
+    });
+  }
+
   function init() {
     document.addEventListener('DOMContentLoaded', function () {
       var schemaurl = chrome.runtime.getURL('schema.json');
@@ -278,6 +303,7 @@
       }).then(function (_schema) {
         schema = _schema;
       });
+      getSyncData();
       bindClick();
       toggleTabs();
       loadTabs();

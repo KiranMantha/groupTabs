@@ -76,7 +76,8 @@
               ollistcontainer = createEl("ol"),
               openicon = createEl("i"),
               toggleicon = createEl("i"),
-              deleteicon = createEl("i");
+              deleteicon = createEl("i"),
+              iconContainer = createEl('span');
 
             addClass(groupcontainer, "groupcontainer");
             addClass(ollistcontainer, "tabsList");
@@ -92,9 +93,10 @@
             deleteicon.groupindex = i;
             deleteicon.onclick = deleteSavedGroup;
 
+            appendChild(iconContainer, openicon, deleteicon, toggleicon);
             addClass(h3, "groupheader");
             h3.textContent = group.name;
-            appendChild(h3, openicon, deleteicon, toggleicon);
+            appendChild(h3, iconContainer);
 
             for (var tab of group.tablist) {
               var li = createEl("li"),

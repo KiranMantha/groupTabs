@@ -13,19 +13,11 @@
     "48": "icon48.png",
     "128": "icon128.png"
   },
-  "browser_action": {
+  "action": {
     "default_title": "Group Tabs",
     "default_popup": "collapse_tab.html"
   },
-  "background": {
-    "persistent": false,
-    "scripts": [
-      "collapse_tab.js"
-    ]
-  },
-  "web_accessible_resources": [
-    "schema.json",
-    "json-schema-draft.json"
-  ],
-  "content_security_policy": "script-src 'self' 'unsafe-eval'"
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  }
 }

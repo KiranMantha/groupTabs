@@ -22,7 +22,7 @@
           a.textContent = tab.title;
           a.setAttribute("href", tab.url);
           a.setAttribute("target", "_blank");
-          addClass(span, ["close", "fa", "fa-times"]);
+          addClass(span, ["close", "gt-times"]);
           span.setAttribute("title", "Remove");
           span.setAttribute("data-tabid", tab.id);
           li.setAttribute("title", tab.title);
@@ -35,9 +35,9 @@
   }
 
   function onToggleIconClick(e) {
-    var pgc = e.target.parentElement.parentElement;
+    var pgc = e.target.parentElement.parentElement.parentElement;
     toggleClass(pgc, 'in');
-    toggleClass(e.target, ['fa-chevron-down', 'fa-chevron-up']);
+    toggleClass(e.target, ['gt-chevron-down', 'gt-chevron-up']);
   }
 
   function openGroupedTabs(e) {
@@ -81,14 +81,14 @@
 
             addClass(groupcontainer, "groupcontainer");
             addClass(ollistcontainer, "tabsList");
-            addClass(openicon, ['fa', 'fa-external-link']);
-            openicon.setAttribute('title', 'Open Group');
+            addClass(openicon, ['fa', 'gt-external-link']);
+            openicon.setAttribute('title', 'Open group in new window');
             openicon.groupedtabs = group.tablist;
             openicon.onclick = openGroupedTabs;
-            addClass(toggleicon, ['fa', 'fa-chevron-down']);
+            addClass(toggleicon, ['fa', 'gt-chevron-down']);
             toggleicon.setAttribute('title', 'View');
             toggleicon.onclick = onToggleIconClick;
-            addClass(deleteicon, ['fa', 'fa-trash']);
+            addClass(deleteicon, ['fa', 'gt-trash']);
             deleteicon.setAttribute('title', 'Delete Group');
             deleteicon.groupindex = i;
             deleteicon.onclick = deleteSavedGroup;

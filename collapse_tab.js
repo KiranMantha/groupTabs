@@ -7,8 +7,8 @@
   function loadTabs() {
     loadedTabs = [];
     chrome.tabs.query({
-        currentWindow: true
-      },
+      currentWindow: true
+    },
       function (btabs) {
         loadedTabs = loadedTabs.concat(btabs);
         var ol = byId("olTabsList");
@@ -59,7 +59,7 @@
     });
   }
 
-  function loadSavedGroups() {    
+  function loadSavedGroups() {
     var downloadBtn = byId('btnImport');
     chrome.storage.local.get(["groupedtabs"], function (data) {
       var lstGroups = byId("lstGroups"),
@@ -80,7 +80,7 @@
 
             addClass(groupcontainer, "groupcontainer");
             addClass(ollistcontainer, "tabsList");
-            addClass(openicon, ['fa', 'fa-sign-out']);
+            addClass(openicon, ['fa', 'fa-external-link']);
             openicon.setAttribute('title', 'Open Group');
             openicon.groupedtabs = group.tablist;
             openicon.onclick = openGroupedTabs;
@@ -129,7 +129,7 @@
   }
 
   function editGroup(groupid) {
-    
+
   }
 
   function getPageMeta(pageurl) {
@@ -138,7 +138,7 @@
         contentScriptQuery: 'fetchUrl',
         url: 'http://url-metadata.herokuapp.com/api/metadata?url=' + pageurl
       },
-      function(response){
+      function (response) {
 
       });
   }
@@ -177,7 +177,7 @@
         chrome.storage.local.set({
           groupedtabs: storedData
         });
-        chrome.storage.sync.set({groupedtabs: storedData});
+        chrome.storage.sync.set({ groupedtabs: storedData });
         loadedTabs = [];
         txtgroupname.value = "";
         var groupDiv = document.querySelector("[data-tabname='tablist']");
@@ -287,7 +287,7 @@
   }
 
   function getSyncData() {
-    chrome.storage.sync.get(['groupedtabs'], function(data) {
+    chrome.storage.sync.get(['groupedtabs'], function (data) {
       chrome.storage.local.set({
         groupedtabs: data.groupedtabs
       });

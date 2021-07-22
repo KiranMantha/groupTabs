@@ -230,6 +230,7 @@
 .groupcontainer .groupheader {
   padding: 0 10px;
   text-transform: capitalize;
+  line-height: 1;
 }
 
 .groupcontainer .groupheader .fa {

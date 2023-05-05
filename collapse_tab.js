@@ -250,7 +250,8 @@
           reader.readAsText(input.files[0]);
           reader.onload = function (evt) {
             json = JSON.parse(evt.target.result);
-            valid = validateJSON(json);
+            // valid = validateJSON(json);
+            valid = validateSchema(json);
             if (valid) {
               chrome.storage.local.set(json);
               byId('lblFile').innerHTML = 'Choose File To Upload';

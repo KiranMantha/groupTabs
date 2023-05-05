@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Group Tabs",
   "description": "Save tabs as a collection and view later.",
-  "version": "0.0.0.6",
+  "version": "0.0.0.7",
   "author": "Kiran Mantha",
   "permissions": [
     "tabs",
@@ -16,8 +16,5 @@
   "action": {
     "default_title": "Group Tabs",
     "default_popup": "collapse_tab.html"
-  },
-  "content_security_policy": {
-    "extension_pages": "script-src 'self' 'unsafe-eval'; object-src 'self'"   
   }
 }
